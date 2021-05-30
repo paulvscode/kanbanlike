@@ -33,8 +33,15 @@ const InputCard = ({ setOpen, listId }) => {
 
   const handleBtnConfirm = () => {
     addMoreCard(cardTitle, listId);
+    setCardTitle("");
     setOpen(false);
   };
+
+  const handleBlur = () => {
+    setOpen(false);
+    setCardTitle("");
+  };
+
   return (
     <div>
       <div>
@@ -42,7 +49,7 @@ const InputCard = ({ setOpen, listId }) => {
           <InputBase
             onChange={handleOnChange}
             multiline
-            onBlur={() => setOpen(false)}
+            onBlur={handleBlur}
             fullWidth
             inputProps={{
               className: classes.input,

@@ -1,5 +1,6 @@
 import "./App.css";
 import List from "./components/List/List";
+import { v4 as uuid } from "uuid";
 import React, { useState } from "react";
 import store from "../src/utils/store";
 import StoreApi from "../src/utils/storeApi";
@@ -7,8 +8,23 @@ import StoreApi from "../src/utils/storeApi";
 function App() {
   const [data, setData] = useState(store);
   const addMoreCard = (title, listId) => {
-    console.log(title);
-    console.log(listId);
+    const newCardId = uuid();
+    const newCard = {
+      id: newCardId,
+      title,
+    };
+
+    const list = data.lists[listId];
+    list.cards = [...list.cards, newCard];
+
+    const newState = {
+      ...data,
+      lists: {
+        ...data.lists,
+        [listId]: list,
+      },
+    };
+    setData(newState);
   };
   return (
     <StoreApi.Provider value={{ addMoreCard }}>
