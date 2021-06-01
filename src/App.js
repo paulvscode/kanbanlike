@@ -6,12 +6,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import store from "../src/utils/store";
 import StoreApi from "../src/utils/storeApi";
 import InputContainer from "./components/Input/InputContainer";
+import { DragDropContext } from "react-beautiful-dnd";
 
 const useStyle = makeStyles((theme) => ({
   root: {
     display: "flex",
     minHeight: "100vh",
     background: "green",
+    width: "100%",
+    overflowY: "auto",
   },
 }));
 
@@ -55,15 +58,31 @@ function App() {
     };
     setData(newState);
   };
+
+  const updateListTitle = (title, listId) => {
+    const list = data.lists[listId];
+    list.title = title;
+
+    const newState = {
+      ...data,
+      lists: {
+        ...data.lists,
+        [listId]: list,
+      },
+    };
+    setData(newState);
+  };
   return (
-    <StoreApi.Provider value={{ addMoreCard, addMoreList }}>
-      <div className={classes.root}>
-        {data.listIds.map((listId) => {
-          const list = data.lists[listId];
-          return <List list={list} key={listId} />;
-        })}
-        <InputContainer type='list' />
-      </div>
+    <StoreApi.Provider value={{ addMoreCard, addMoreList, updateListTitle }}>
+      <DragDropContext>
+        <div className={classes.root}>
+          {data.listIds.map((listId) => {
+            const list = data.lists[listId];
+            return <List list={list} key={listId} />;
+          })}
+          <InputContainer type='list' />
+        </div>
+      </DragDropContext>
     </StoreApi.Provider>
   );
 }

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Typography, InputBase } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import storeApi from "../../utils/storeApi";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -26,21 +27,32 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const Title = ({ title }) => {
+const Title = ({ title, listId }) => {
   const [open, setOpen] = useState();
+  const [newTitle, setNewTitle] = useState(title);
+  const { updateListTitle } = useContext(storeApi);
   const classes = useStyle();
+  const handleOnChange = (e) => {
+    setNewTitle(e.target.value);
+  };
+
+  const handleBlur = () => {
+    updateListTitle(newTitle, listId);
+    setOpen(false);
+  };
   return (
     <div>
       {open ? (
         <div>
           <InputBase
+            onChange={handleOnChange}
             autoFocus
-            value={title}
+            value={newTitle}
             inputProps={{
               className: classes.input,
             }}
             fullWidth
-            onBlur={() => setOpen(!open)}
+            onBlur={handleBlur}
           />
         </div>
       ) : (
