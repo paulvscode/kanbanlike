@@ -75,7 +75,14 @@ function App() {
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
-
+    console.log(
+      "destination",
+      destination,
+      "source",
+      source,
+      "draggableId",
+      draggableId
+    );
     if (!destination) {
       return;
     }
@@ -93,6 +100,19 @@ function App() {
         lists: {
           ...data.lists,
           [sourceList.id]: destinationList,
+        },
+      };
+      setData(newState);
+    } else {
+      sourceList.cards.splice(source.index, 1);
+      destinationList.cards.splice(destination.index, 0, draggingCard);
+
+      const newState = {
+        ...data,
+        lists: {
+          ...data.lists,
+          [sourceList.id]: sourceList,
+          [destinationList.id]: destinationList,
         },
       };
       setData(newState);
