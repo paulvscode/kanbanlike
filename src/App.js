@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import store from "../src/utils/store";
 import StoreApi from "../src/utils/storeApi";
 import InputContainer from "./components/Input/InputContainer";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -74,7 +74,7 @@ function App() {
   };
 
   const onDragEnd = (result) => {
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId, type } = result;
     console.log(
       "destination",
       destination,
@@ -84,6 +84,12 @@ function App() {
       draggableId
     );
     if (!destination) {
+      return;
+    }
+    if (type === "list") {
+      const newListId = data.listIds;
+      newListId.splice(source.index, 1);
+      newListId.splice(destination.index, 0, draggableId);
       return;
     }
     const sourceList = data.lists[source.droppableId];
@@ -121,13 +127,22 @@ function App() {
   return (
     <StoreApi.Provider value={{ addMoreCard, addMoreList, updateListTitle }}>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className={classes.root}>
-          {data.listIds.map((listId) => {
-            const list = data.lists[listId];
-            return <List list={list} key={listId} />;
-          })}
-          <InputContainer type='list' />
-        </div>
+        <Droppable droppableId='app' type='list' direction='horizontal'>
+          {(provided) => (
+            <div
+              className={classes.root}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {data.listIds.map((listId, index) => {
+                const list = data.lists[listId];
+                return <List list={list} key={listId} index={index} />;
+              })}
+              <InputContainer type='list' />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       </DragDropContext>
     </StoreApi.Provider>
   );
