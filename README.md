@@ -1,9 +1,9 @@
-# THis is a kanban method (like Trello) App, done in React.
+# This is a kanban method (like Trello) App, done in React.
 
 I used Daily web coding tutorials to set it up.
 
 
--- Create React App Readme --
+# Create React App Readme
 
 
 # Getting Started with Create React App
